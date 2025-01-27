@@ -64,5 +64,16 @@ public class MueblesAPIREST {
             }
         });
 
+        Spark.delete("/muebles/id/:id", (request, response) -> {
+            Long id = Long.parseLong(request.params(":id"));
+            boolean eliminado = dao.deleteById(id);
+            response.type("application/json");
+            if(eliminado){
+                return "Mueble eliminado correctamente";
+            }else{
+                response.status(404);
+                return "No se pudo realizar la eliminación";
+            }
+        });
     }
 }
