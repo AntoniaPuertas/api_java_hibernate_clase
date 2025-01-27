@@ -62,7 +62,7 @@ public class MuebleDao implements MuebleDAOInterface{
             session.getTransaction().rollback();
         }
         session.close();
-        return null;
+        return mueble;
     }
 
     @Override

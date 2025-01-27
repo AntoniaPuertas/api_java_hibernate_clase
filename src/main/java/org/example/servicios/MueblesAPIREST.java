@@ -35,5 +35,34 @@ public class MueblesAPIREST {
                 return "mueble no encontrado";
             }
         });
+
+        Spark.post("/muebles", (request, response) -> {
+            String body = request.body();
+            //TODO comprobar si han llegado los datos correctos
+            Mueble nuevoMueble = gson.fromJson(body, Mueble.class);
+
+            //TODO comprobar si se creado el nuevoMueble
+            Mueble creado = dao.create(nuevoMueble);
+
+            response.type("application/json");
+            return gson.toJson(creado);
+        });
+
+        Spark.put("muebles/id/:id", (request, response) -> {
+            Long id = Long.parseLong(request.params(":id"));
+            //TODO comprobar si han llegado los datos correctos
+            String body = request.body();
+            Mueble muebleActualizado = gson.fromJson(body, Mueble.class);
+            muebleActualizado.setId(id);
+
+            Mueble actualizado = dao.actualizar(muebleActualizado);
+            if(actualizado != null){
+                return gson.toJson(actualizado);
+            }else{
+                response.status(404);
+                return "No se ha podido realizar la actualización";
+            }
+        });
+
     }
 }
