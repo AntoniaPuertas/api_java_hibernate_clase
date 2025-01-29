@@ -41,7 +41,7 @@ public class HibernateUtil {
                 properties.put("hibernate.connection.password", dbPassword);
 
                 // Otras configuraciones de Hibernate
-                properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+                properties.put("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
                 properties.put("hibernate.show_sql", "true");
                 properties.put("hibernate.hbm2ddl.auto", "update");
 
