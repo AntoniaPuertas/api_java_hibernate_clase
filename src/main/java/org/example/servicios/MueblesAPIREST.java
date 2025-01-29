@@ -1,6 +1,7 @@
 package org.example.servicios;
 
 import com.google.gson.Gson;
+import io.github.cdimascio.dotenv.Dotenv;
 import org.example.dao.MuebleDAOInterface;
 import org.example.entidades.Mueble;
 import spark.Spark;
@@ -12,7 +13,13 @@ public class MueblesAPIREST {
     private Gson gson = new Gson();
 
     public MueblesAPIREST(MuebleDAOInterface implementacion){
-        Spark.port(8080);
+        Dotenv dotenv = Dotenv.load();
+
+        // Configura el puerto
+        int port = System.getenv("PORT") != null ?
+                Integer.parseInt(System.getenv("PORT")) :
+                Integer.parseInt(dotenv.get("PORT", "4567"));
+        Spark.port(port);
 
         dao = implementacion;
 

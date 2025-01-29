@@ -1,9 +1,13 @@
 package org.example.util;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import org.hibernate.SessionFactory;
+import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
+
+import java.util.Properties;
 
 public class HibernateUtil {
     private static StandardServiceRegistry registry;
@@ -12,6 +16,34 @@ public class HibernateUtil {
     public static SessionFactory getSessionFactory() {
 
         try {
+
+            // Cargar variables de entorno
+            Dotenv dotenv = Dotenv.load();
+
+            Properties properties = new Properties();
+
+            // Configuración de Hibernate
+            properties.put("hibernate.connection.url",
+                    System.getenv("DATABASE_URL") != null ?
+                            System.getenv("DATABASE_URL") :
+                            dotenv.get("DATABASE_URL"));
+
+            properties.put("hibernate.connection.username",
+                    System.getenv("DATABASE_USER") != null ?
+                            System.getenv("DATABASE_USER") :
+                            dotenv.get("DATABASE_USER"));
+
+            properties.put("hibernate.connection.password",
+                    System.getenv("DATABASE_PASSWORD") != null ?
+                            System.getenv("DATABASE_PASSWORD") :
+                            dotenv.get("DATABASE_PASSWORD"));
+
+
+            StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+                    .applySettings(properties)
+                    .build();
+
+
             Configuration configuration = new Configuration().configure();
 
             // Add debug logs
