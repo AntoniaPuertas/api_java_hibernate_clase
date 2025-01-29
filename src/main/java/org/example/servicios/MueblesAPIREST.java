@@ -13,12 +13,15 @@ public class MueblesAPIREST {
     private Gson gson = new Gson();
 
     public MueblesAPIREST(MuebleDAOInterface implementacion){
-        Dotenv dotenv = Dotenv.load();
+//        String databaseUrl = System.getenv("DATABASE_URL");
+//        String databaseUser = System.getenv("DATABASE_USER");
+//        String databasePassword = System.getenv("DATABASE_PASSWORD");
+        String puerto = System.getenv("PORT");
 
         // Configura el puerto
-        int port = System.getenv("PORT") != null ?
-                Integer.parseInt(System.getenv("PORT")) :
-                Integer.parseInt(dotenv.get("PORT", "4567"));
+        int port = puerto != null ?
+                Integer.parseInt(puerto) :
+                Integer.parseInt(puerto);
         Spark.port(port);
 
         dao = implementacion;
