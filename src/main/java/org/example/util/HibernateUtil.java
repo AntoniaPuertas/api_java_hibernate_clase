@@ -1,88 +1,64 @@
 package org.example.util;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import org.example.entidades.Mueble;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.cfg.Configuration;
+
 
 import java.util.Properties;
 
 public class HibernateUtil {
-    private static StandardServiceRegistry registry;
     private static SessionFactory sessionFactory;
 
     public static SessionFactory getSessionFactory() {
-
-        try {
-
-            // Cargar variables de entorno
-            Dotenv dotenv = Dotenv.load();
-
-            Properties properties = new Properties();
-
-            // Configuración de Hibernate
-            properties.put("hibernate.connection.url",
-                    System.getenv("DATABASE_URL") != null ?
-                            System.getenv("DATABASE_URL") :
-                            dotenv.get("DATABASE_URL"));
-
-            properties.put("hibernate.connection.username",
-                    System.getenv("DATABASE_USER") != null ?
-                            System.getenv("DATABASE_USER") :
-                            dotenv.get("DATABASE_USER"));
-
-            properties.put("hibernate.connection.password",
-                    System.getenv("DATABASE_PASSWORD") != null ?
-                            System.getenv("DATABASE_PASSWORD") :
-                            dotenv.get("DATABASE_PASSWORD"));
-
-
-            StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-                    .applySettings(properties)
-                    .build();
-
-
-            Configuration configuration = new Configuration().configure();
-
-            // Add debug logs
-            System.out.println("Connection URL: " + configuration.getProperty("hibernate.connection.url"));
-            System.out.println("Dialect: " + configuration.getProperty("hibernate.dialect"));
-
-            return configuration.buildSessionFactory();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-
-/*
         if (sessionFactory == null) {
             try {
-                //crear registro
-                registry = new StandardServiceRegistryBuilder().build();
-                //crear MetadataSources
-                MetadataSources sources = new MetadataSources(registry);
-                //crear Metadata
-                Metadata metadata = sources.getMetadataBuilder().build();
-                //crear SessionFactory
-                sessionFactory = metadata.getSessionFactoryBuilder().build();
+                Properties properties = new Properties();
+
+                // Obtener variables de entorno o valores por defecto
+                String dbUrl = System.getenv("DATABASE_URL");
+                String dbUser = System.getenv("DATABASE_USER");
+                String dbPassword = System.getenv("DATABASE_PASSWORD");
+
+                // Si no hay variables de entorno, intentar cargar desde .env
+                if (dbUrl == null || dbUser == null || dbPassword == null) {
+                    try {
+                        Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
+                        dbUrl = dotenv.get("DATABASE_URL");
+                        dbUser = dotenv.get("DATABASE_USER");
+                        dbPassword = dotenv.get("DATABASE_PASSWORD");
+                    } catch (Exception e) {
+                        throw new RuntimeException("No se pudieron cargar las variables de entorno");
+                    }
+                }
+
+                // Configurar propiedades de Hibernate
+                properties.put("hibernate.connection.url", dbUrl);
+                properties.put("hibernate.connection.username", dbUser);
+                properties.put("hibernate.connection.password", dbPassword);
+
+                // Otras configuraciones de Hibernate
+                properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+                properties.put("hibernate.show_sql", "true");
+                properties.put("hibernate.hbm2ddl.auto", "update");
+
+                StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+                        .applySettings(properties)
+                        .build();
+
+                sessionFactory = new MetadataSources(registry)
+                        .addAnnotatedClass(Mueble.class) // Asegúrate de incluir todas tus clases de entidad
+                        .buildMetadata()
+                        .buildSessionFactory();
+
             } catch (Exception e) {
                 e.printStackTrace();
-                if (registry != null) {
-                    StandardServiceRegistryBuilder.destroy(registry);
-                }
+                throw new RuntimeException("Error inicializando SessionFactory", e);
             }
         }
         return sessionFactory;
-
-
- */
-    }
-
-    public static void shutdown(){
-        if(registry != null){
-            StandardServiceRegistryBuilder.destroy(registry);
-        }
     }
 }
