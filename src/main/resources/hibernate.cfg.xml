@@ -5,10 +5,17 @@
 <hibernate-configuration>
     <session-factory>
         <!-- Conexión a la base de datos -->
-        <property name="connection.url">jdbc:mysql://localhost:3306/muebles_bd</property>
+<!--        <property name="connection.url">jdbc:mysql://localhost:3306/muebles_bd</property>-->
+<!--        <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>-->
+<!--        <property name="connection.username">root</property>-->
+<!--        <property name="connection.password">root</property>-->
+<!--        mysql://root:eYqrLCWfsbuxKjIgxpKVJWFvZIdWJVHR@roundhouse.proxy.rlwy.net:17671/railway-->
+        <property name="connection.url">jdbc:mysql://roundhouse.proxy.rlwy.net:17671/railway</property>
         <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
         <property name="connection.username">root</property>
-        <property name="connection.password">root</property>
+        <property name="connection.password">eYqrLCWfsbuxKjIgxpKVJWFvZIdWJVHR</property>
+
+
         <property name="dialect">org.hibernate.dialect.MySQL8Dialect</property>
         <!-- Muestra consultas SQL en consola -->
         <property name="show_sql">true</property>
@@ -19,7 +26,7 @@
         <!-- En este caso si ponemos update no vuelve a crear los datos-->
         <!--        <property name="hibernate.hbm2ddl.auto">update</property>-->
         <!-- Crea tablas al iniciar -->
-        <property name="hibernate.hbm2ddl.auto">update</property>
+        <property name="hibernate.hbm2ddl.auto">create</property>
         <!--Para importar múltiples archivos sql utilizamos:-->
         <!-- <property name="hibernate.hbm2ddl.import_files">import.sql,data.sql</property> -->
 
