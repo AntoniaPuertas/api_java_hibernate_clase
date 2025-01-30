@@ -4,35 +4,20 @@
         "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
     <session-factory>
-        <!-- Conexión a la base de datos -->
-<!--        <property name="connection.url">jdbc:mysql://localhost:3306/muebles_bd</property>-->
-<!--        <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>-->
-<!--        <property name="connection.username">root</property>-->
-<!--        <property name="connection.password">root</property>-->
-<!--        mysql://root:eYqrLCWfsbuxKjIgxpKVJWFvZIdWJVHR@roundhouse.proxy.rlwy.net:17671/railway-->
-        <property name="connection.url">jdbc:mysql://roundhouse.proxy.rlwy.net:17671/railway</property>
+        <!-- Conexión a la base de datos usando variables de entorno -->
+        <property name="connection.url">${env.DATABASE_URL}</property>
         <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
-        <property name="connection.username">root</property>
-        <property name="connection.password">eYqrLCWfsbuxKjIgxpKVJWFvZIdWJVHR</property>
+        <property name="connection.username">${env.DATABASE_USER}</property>
+        <property name="connection.password">${env.DATABASE_PASSWORD}</property>
 
-
+        <!-- Configuración de Hibernate -->
         <property name="dialect">org.hibernate.dialect.MySQL8Dialect</property>
-        <!-- Muestra consultas SQL en consola -->
         <property name="show_sql">true</property>
-        <!-- Formatea SQL para mejor lectura -->
         <property name="format_sql">true</property>
-        <!-- <property name="current_session_context_class">thread</property> -->
-
-        <!-- En este caso si ponemos update no vuelve a crear los datos-->
-        <!--        <property name="hibernate.hbm2ddl.auto">update</property>-->
-        <!-- Crea tablas al iniciar -->
-        <property name="hibernate.hbm2ddl.auto">create</property>
-        <!--Para importar múltiples archivos sql utilizamos:-->
-        <!-- <property name="hibernate.hbm2ddl.import_files">import.sql,data.sql</property> -->
+        <!-- Cambiado a update para mantener los datos -->
+        <property name="hibernate.hbm2ddl.auto">update</property>
 
         <!-- entities -->
         <mapping class="org.example.entidades.Mueble"/>
-
-
     </session-factory>
 </hibernate-configuration>
