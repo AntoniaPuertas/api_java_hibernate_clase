@@ -5,6 +5,7 @@
 <hibernate-configuration>
     <session-factory>
         <!-- entities -->
+
         <mapping class="org.example.entidades.Mueble"/>
 
 
