@@ -5,6 +5,7 @@
 <hibernate-configuration>
     <session-factory>
         <!-- Conexión a la base de datos usando variables de entorno -->
+        <property name="connection.provider_class">org.hibernate.connection.DriverManagerConnectionProvider</property>
         <property name="connection.url">${env.DATABASE_URL}</property>
         <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
         <property name="connection.username">${env.DATABASE_USER}</property>
