@@ -88,6 +88,7 @@ public class MueblesAPIREST {
 
     public String createJsonResponse(String status, String message) {
         Gson gson = new Gson();
+
         JsonObject jsonResponse = new JsonObject();
         jsonResponse.addProperty("status", status);
         jsonResponse.addProperty("message", message);
