@@ -1,6 +1,7 @@
 package org.example.servicios;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.example.dao.MuebleDAOInterface;
 import org.example.entidades.Mueble;
@@ -13,9 +14,7 @@ public class MueblesAPIREST {
     private Gson gson = new Gson();
 
     public MueblesAPIREST(MuebleDAOInterface implementacion){
-//        String databaseUrl = System.getenv("DATABASE_URL");
-//        String databaseUser = System.getenv("DATABASE_USER");
-//        String databasePassword = System.getenv("DATABASE_PASSWORD");
+
         String puerto = System.getenv("PORT");
 
         // Configura el puerto
@@ -30,7 +29,7 @@ public class MueblesAPIREST {
         Spark.get("/muebles", (request, response) -> {
             List<Mueble> muebles = dao.devolverTodos();
             response.type("application/json");
-            return gson.toJson(muebles);
+            return createJsonResponse("200", gson.toJson(muebles));
         });
 
         //endpoint para obtener un mueble por su id
@@ -39,10 +38,10 @@ public class MueblesAPIREST {
             Mueble mueble = dao.buscarPorId(id);
             response.type("application/json");
             if(mueble != null){
-                return gson.toJson(mueble);
+                return createJsonResponse("200", gson.toJson(mueble));
             }else{
                 response.status(404);
-                return "mueble no encontrado";
+                return createJsonResponse("404", "mueble no encontrado");
             }
         });
 
@@ -55,7 +54,7 @@ public class MueblesAPIREST {
             Mueble creado = dao.create(nuevoMueble);
 
             response.type("application/json");
-            return gson.toJson(creado);
+            return createJsonResponse("200", gson.toJson(creado));
         });
 
         Spark.put("muebles/id/:id", (request, response) -> {
@@ -67,10 +66,10 @@ public class MueblesAPIREST {
 
             Mueble actualizado = dao.actualizar(muebleActualizado);
             if(actualizado != null){
-                return gson.toJson(actualizado);
+                return createJsonResponse("200", gson.toJson(actualizado));
             }else{
                 response.status(404);
-                return "No se ha podido realizar la actualización";
+                return createJsonResponse("404", "No se ha podido realizar la actualización");
             }
         });
 
@@ -79,11 +78,19 @@ public class MueblesAPIREST {
             boolean eliminado = dao.deleteById(id);
             response.type("application/json");
             if(eliminado){
-                return "Mueble eliminado correctamente";
+                return createJsonResponse("200", "Mueble eliminado correctamente");
             }else{
                 response.status(404);
-                return "No se pudo realizar la eliminación";
+                return createJsonResponse("404", "No se pudo realizar la eliminación");
             }
         });
+    }
+
+    public String createJsonResponse(String status, String message) {
+        Gson gson = new Gson();
+        JsonObject jsonResponse = new JsonObject();
+        jsonResponse.addProperty("status", status);
+        jsonResponse.addProperty("message", message);
+        return gson.toJson(jsonResponse);
     }
 }
